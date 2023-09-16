@@ -60,6 +60,7 @@ def prepare_logits_processor(
 def generate_stream(
     model,
     tokenizer,
+    cache = None,
     params: Dict,
     device: str,
     context_len: int,

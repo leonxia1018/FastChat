@@ -41,6 +41,7 @@ def process_response(response):
 def generate_stream_chatglm(
     model,
     tokenizer,
+    cache = None,
     params,
     device,
     context_len=2048,

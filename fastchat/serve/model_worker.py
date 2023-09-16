@@ -46,6 +46,7 @@ from fastchat.model.model_adapter import (
 )
 from fastchat.modules.gptq import GptqConfig
 from fastchat.modules.awq import AWQConfig
+from fastchat.modules.exllama import ExllamaConfig, init_exllama_cache
 from fastchat.utils import build_logger, pretty_print_semaphore, get_context_length
 
 
@@ -194,6 +195,7 @@ class ModelWorker(BaseModelWorker):
         cpu_offloading: bool = False,
         gptq_config: Optional[GptqConfig] = None,
         awq_config: Optional[AWQConfig] = None,
+        exllama_config: Optional[ExllamaConfig] = None,
         stream_interval: int = 2,
         conv_template: str = None,
         embed_in_truncate: bool = False,
@@ -219,6 +221,7 @@ class ModelWorker(BaseModelWorker):
             cpu_offloading=cpu_offloading,
             gptq_config=gptq_config,
             awq_config=awq_config,
+            exllama_config=exllama_config,
         )
         self.device = device
         if self.tokenizer.pad_token == None:
@@ -227,7 +230,10 @@ class ModelWorker(BaseModelWorker):
         self.generate_stream_func = get_generate_stream_function(self.model, model_path)
         self.stream_interval = stream_interval
         self.embed_in_truncate = embed_in_truncate
-
+        if exllama_config:
+            self.cache = init_exllama_cache(self.model)
+        else:
+            self.cache = None
         if not no_register:
             self.init_heart_beat()
 
@@ -238,6 +244,7 @@ class ModelWorker(BaseModelWorker):
             for output in self.generate_stream_func(
                 self.model,
                 self.tokenizer,
+                self.cache,
                 params,
                 self.device,
                 self.context_len,
@@ -494,6 +501,11 @@ def create_model_worker():
         wbits=args.awq_wbits,
         groupsize=args.awq_groupsize,
     )
+    exllama_config = ExllamaConfig(
+        max_seq_len=args.exllama_max_seq_len,
+        gpu_split=args.exllama_gpu_split,
+    )
+
 
     worker = ModelWorker(
         args.controller_address,
@@ -510,6 +522,7 @@ def create_model_worker():
         cpu_offloading=args.cpu_offloading,
         gptq_config=gptq_config,
         awq_config=awq_config,
+        exllama_config=exllama_config,
         stream_interval=args.stream_interval,
         conv_template=args.conv_template,
         embed_in_truncate=args.embed_in_truncate,

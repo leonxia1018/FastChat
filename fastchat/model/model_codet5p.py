@@ -14,6 +14,7 @@ from transformers import (
 def generate_stream_codet5p(
     model,
     tokenizer,
+    cache = None,
     params,
     device,
     context_len=2048,
