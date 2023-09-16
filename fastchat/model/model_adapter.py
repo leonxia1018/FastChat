@@ -448,6 +448,11 @@ def add_model_args(parser):
         help="Used for AWQ. Groupsize to use for AWQ quantization; default uses full row.",
     )
     parser.add_argument(
+        "--enable-exllama",
+        action="store_true",
+        help="Used for exllamabv2. Enable exllamaV2 inference framework.",
+    )
+    parser.add_argument(
         "--exllama-max-seq-len",
         type=int,
         default=4096,

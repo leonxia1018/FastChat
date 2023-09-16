@@ -501,11 +501,13 @@ def create_model_worker():
         wbits=args.awq_wbits,
         groupsize=args.awq_groupsize,
     )
-    exllama_config = ExllamaConfig(
-        max_seq_len=args.exllama_max_seq_len,
-        gpu_split=args.exllama_gpu_split,
-    )
-
+    if args.enable_exllama:
+        exllama_config = ExllamaConfig(
+            max_seq_len=args.exllama_max_seq_len,
+            gpu_split=args.exllama_gpu_split,
+        )
+    else:
+        exllama_config = None
 
     worker = ModelWorker(
         args.controller_address,
