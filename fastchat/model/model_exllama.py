@@ -35,6 +35,7 @@ def generate_stream_exllama(
     max_new_tokens = int(params.get("max_new_tokens", 256))
 
     generator.set_stop_conditions(params.get("stop_token_ids", None) or [])
+    echo = bool(params.get("echo", True))
 
     input_ids = generator.tokenizer.encode(prompt)
     prompt_tokens = input_ids.shape[-1]
@@ -42,9 +43,13 @@ def generate_stream_exllama(
     generator.begin_stream(input_ids, settings)
 
     generated_tokens = 0
-
+    if echo:
+        output = prompt
+    else:
+        output = ''
     while True:
         chunk, eos, _ = generator.stream()
+        output += chunk
         generated_tokens += 1
         if generated_tokens == max_new_tokens:
             finish_reason = "length"
@@ -53,7 +58,7 @@ def generate_stream_exllama(
             finish_reason = "length"
             break
         yield {
-            "text": chunk,
+            "text": output,
             "usage": {
                 "prompt_tokens": prompt_tokens,
                 "completion_tokens": generated_tokens,
@@ -63,7 +68,7 @@ def generate_stream_exllama(
         }
 
     yield {
-        "text": chunk,
+        "text": output,
         "usage": {
             "prompt_tokens": prompt_tokens,
             "completion_tokens": generated_tokens,
