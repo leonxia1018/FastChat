@@ -244,10 +244,10 @@ class ModelWorker(BaseModelWorker):
             for output in self.generate_stream_func(
                 self.model,
                 self.tokenizer,
-                self.cache,
                 params,
                 self.device,
                 self.context_len,
+                self.cache,
                 self.stream_interval,
             ):
                 ret = {

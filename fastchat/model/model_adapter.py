@@ -340,10 +340,10 @@ def get_generate_stream_function(model: torch.nn.Module, model_path: str):
         def generate_stream_peft(
             model,
             tokenizer,
-            cache=None,
             params: Dict,
             device: str,
             context_len: int,
+            cache=None,
             stream_interval: int = 2,
             judge_sent_end: bool = False,
         ):

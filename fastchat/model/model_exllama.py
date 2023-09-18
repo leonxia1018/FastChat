@@ -14,9 +14,9 @@ except:
 def generate_stream_exllama(
     model,
     tokenizer,
-    cache,
     params: Dict,
     device: str,
+    cache,
     context_len: int,
     stream_interval: int = 2,
     judge_sent_end: bool = False,
