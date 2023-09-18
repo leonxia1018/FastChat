@@ -1,5 +1,7 @@
+from dataclasses import dataclass, field
 import sys
 
+@dataclass
 class ExllamaConfig:
     max_seq_len:int
     gpu_split:str = None
@@ -23,7 +25,9 @@ def load_exllama_model(model_path, exllama_config: ExllamaConfig):
 
     model = ExLlamaV2(exllamav2_config)
     tokenizer = ExLlamaV2Tokenizer(exllamav2_config)
-    split = [float(alloc) for alloc in exllama_config.gpu_split.split(",")]
+    split = None
+    if  exllama_config.gpu_split:
+        split = [float(alloc) for alloc in exllama_config.gpu_split.split(",")]
     model.load(split)
 
     return model, tokenizer

@@ -16,8 +16,8 @@ def generate_stream_exllama(
     tokenizer,
     params: Dict,
     device: str,
-    cache,
     context_len: int,
+    cache,
     stream_interval: int = 2,
     judge_sent_end: bool = False,
 ):
@@ -29,17 +29,21 @@ def generate_stream_exllama(
     settings.temperature = float(params.get("temperature", 0.85))
     settings.top_k = int(params.get("top_k", 50))
     settings.top_p = float(params.get("top_p", 0.8))
-    settings.token_repetition_penalty = float(params.get("top_p", 1.15))
+    settings.token_repetition_penalty = float(params.get("repetition_penalty", 1.15))
     settings.disallow_tokens(generator.tokenizer, [generator.tokenizer.eos_token_id])
 
     max_new_tokens = int(params.get("max_new_tokens", 256))
 
     generator.set_stop_conditions(params.get("stop_token_ids", None) or [])
     echo = bool(params.get("echo", True))
+    print('temperature' +  str(settings.temperature))
+    print('top_k' +  str(settings.top_k))
+    print('top_p' +  str(settings.top_p))
+    print('repetition' + str(settings.token_repetition_penalty))
+    print('bool' + str(echo))
 
     input_ids = generator.tokenizer.encode(prompt)
     prompt_tokens = input_ids.shape[-1]
-
     generator.begin_stream(input_ids, settings)
 
     generated_tokens = 0
@@ -57,6 +61,7 @@ def generate_stream_exllama(
         elif eos:
             finish_reason = "length"
             break
+        print('output' + output)
         yield {
             "text": output,
             "usage": {
@@ -76,5 +81,8 @@ def generate_stream_exllama(
         },
         "finish_reason": finish_reason,
     }
+    print("Hit gc.collect")
     gc.collect()
+    print("Hit torch cuda empty")
     torch.cuda.empty_cache()
+    print("Finished streaming")
