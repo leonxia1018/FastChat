@@ -36,11 +36,6 @@ def generate_stream_exllama(
 
     generator.set_stop_conditions(params.get("stop_token_ids", None) or [])
     echo = bool(params.get("echo", True))
-    print('temperature' +  str(settings.temperature))
-    print('top_k' +  str(settings.top_k))
-    print('top_p' +  str(settings.top_p))
-    print('repetition' + str(settings.token_repetition_penalty))
-    print('bool' + str(echo))
 
     input_ids = generator.tokenizer.encode(prompt)
     prompt_tokens = input_ids.shape[-1]
@@ -81,8 +76,4 @@ def generate_stream_exllama(
         },
         "finish_reason": finish_reason,
     }
-    print("Hit gc.collect")
     gc.collect()
-    print("Hit torch cuda empty")
-    torch.cuda.empty_cache()
-    print("Finished streaming")
