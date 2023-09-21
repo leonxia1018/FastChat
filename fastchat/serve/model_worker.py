@@ -165,7 +165,7 @@ class BaseModelWorker:
 
     def count_token(self, params):
         prompt = params["prompt"]
-        
+
         try:
             input_ids = self.tokenizer(prompt).input_ids
             input_echo_len = len(input_ids)

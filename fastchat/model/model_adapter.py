@@ -277,7 +277,7 @@ def load_model(
             model.to(device)
         return model, tokenizer
     elif exllama_config:
-        model, tokenizer = load_exllama_model(model_path,exllama_config)
+        model, tokenizer = load_exllama_model(model_path, exllama_config)
         return model, tokenizer
     kwargs["revision"] = revision
 

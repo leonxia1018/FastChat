@@ -4,12 +4,10 @@ import gc
 from typing import Dict
 
 try:
-    from exllamav2.generator import (
-        ExLlamaV2StreamingGenerator,
-        ExLlamaV2Sampler
-    )
+    from exllamav2.generator import ExLlamaV2StreamingGenerator, ExLlamaV2Sampler
 except:
     pass
+
 
 def generate_stream_exllama(
     model,
@@ -45,7 +43,7 @@ def generate_stream_exllama(
     if echo:
         output = prompt
     else:
-        output = ''
+        output = ""
     while True:
         chunk, eos, _ = generator.stream()
         output += chunk

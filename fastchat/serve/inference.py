@@ -64,7 +64,7 @@ def generate_stream(
     params: Dict,
     device: str,
     context_len: int,
-    cache = None,
+    cache=None,
     stream_interval: int = 2,
     judge_sent_end: bool = False,
 ):
