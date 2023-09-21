@@ -37,7 +37,7 @@ from fastchat.model.model_adapter import (
 )
 from fastchat.modules.gptq import GptqConfig
 from fastchat.modules.awq import AWQConfig
-from fastchat.modules.exllama import ExllamaConfig
+from fastchat.modules.exllama import ExllamaConfig, init_exllama_cache
 from fastchat.utils import is_partial_stop, is_sentence_complete, get_context_length
 
 
@@ -320,6 +320,10 @@ def chat_loop(
         revision=revision,
         debug=debug,
     )
+    if exllama_config:
+        cache = init_exllama_cache(model)
+    else:
+        cache = None
     generate_stream_func = get_generate_stream_function(model, model_path)
 
     model_type = str(type(model)).lower()
@@ -472,6 +476,7 @@ def chat_loop(
                 gen_params,
                 device,
                 context_len=context_len,
+                cache=cache,
                 judge_sent_end=judge_sent_end,
             )
             t = time.time()
