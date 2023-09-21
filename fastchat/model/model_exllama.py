@@ -56,7 +56,6 @@ def generate_stream_exllama(
         elif eos:
             finish_reason = "length"
             break
-        print('output' + output)
         yield {
             "text": output,
             "usage": {
